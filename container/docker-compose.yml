@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  next-app:
+    build: .
+    container_name: container-ba-home
+    ports:
+      - "3000:3000"
+    volumes:
+      - /pjs/ba-home/app:/app              # 로컬 폴더와 컨테이너 내부를 1대1로 연결
+    # [핵심] 가상 공간에서 안전하게 생성한 후 로컬로 전송(추출)하는 스크립트입니다.
+    command: >
+      sh -c "if [ ! -f package.json ]; then
+        echo '➔ 로컬에 파일이 없어 컨테이너 가상 공간에서 Next.js 생성을 시작합니다...' &&
+        npx create-next-app@latest /tmp/next-project --use-npm --yes --typescript --tailwind --eslint --app --src-dir=false --import-alias='@/*' &&
+        echo '➔ 생성된 모든 파일(package.json 등)을 로컬 폴더로 복사(동기화) 중...' &&
+        cp -a /tmp/next-project/. /app/ &&
+        rm -rf /tmp/next-project &&
+        echo '➔ 로컬 폴더로 파일 생성 완료!';
+      fi && npm run dev"
+    environment:
+      - WATCHPACK_POLLING=true
