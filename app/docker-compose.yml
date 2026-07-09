@@ -7,7 +7,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - /pjs/ba-home/app:/app              # 로컬 폴더와 컨테이너 내부를 1대1로 연결
+      - .:/app              # 로컬 폴더와 컨테이너 내부를 1대1로 연결
     # [핵심] 가상 공간에서 안전하게 생성한 후 로컬로 전송(추출)하는 스크립트입니다.
     command: >
       sh -c "if [ ! -f package.json ]; then
